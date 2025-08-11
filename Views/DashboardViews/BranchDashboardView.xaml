@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="POS_APP.Views.DashboardViews.BranchDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:POS_APP.Views.DashboardViews"
+             mc:Ignorable="d" 
+             d:DesignHeight="1200" d:DesignWidth="1920">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Background="#fbfff4" Grid.Column="0" Padding="20" BorderBrush="#130e09" BorderThickness="0 0 2 0">
+            <DockPanel LastChildFill="True" HorizontalAlignment="Center">
+                <Image Source="/Assets/logo.png"
+                       Height="200" 
+                        Width="200"
+                        DockPanel.Dock="Top"
+                        HorizontalAlignment="Center"
+                        Margin="0,50 0 50"/>
+
+                <StackPanel DockPanel.Dock="Top">
+                    <Button Content="ADMIN" 
+                            Command="{Binding AdminDashboardCommand}"
+                            Style="{StaticResource BRole}"
+                            />
+                    <Button Content="MANAGER" 
+                            Command="{Binding ShowRoleLoginCommand}"
+                            CommandParameter="Manager"
+                            Style="{StaticResource BRole}"
+                            />
+                    <Button Content="SUPERVISOR" 
+                            Command="{Binding ShowRoleLoginCommand}"
+                            CommandParameter="Supervisor"
+                            Style="{StaticResource BRole}"
+                    />  
+                    <Button Content="STAFF" 
+                            Command="{Binding ShowRoleLoginCommand}"
+                            CommandParameter="Staff"
+                            Style="{StaticResource BRole}"
+                    />
+                    <Button Content="CASHIER" 
+                            Command="{Binding ShowRoleLoginCommand}"
+                            CommandParameter="Cashier"
+                            Style="{StaticResource BRole}"
+                        />
+                    <Button Content="SHIFT SCHEDULE"
+                            Style="{StaticResource BRole}"
+                            />
+                </StackPanel>
+                <Border Background="#fbfff4" DockPanel.Dock="Bottom"
+            HorizontalAlignment="Center"
+					    BorderBrush="#130e09"
+					    BorderThickness="2"
+						VerticalAlignment="Center"
+					Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="{Binding CurrentDay}"  FontWeight="Bold" FontSize="24" TextAlignment="Center"/>
+                        <TextBlock Text="{Binding CurrentDate}"  FontWeight="Bold" FontSize="24" TextAlignment="Center"/>
+                        <TextBlock Text="{Binding CurrentTime}"  FontWeight="Bold" FontSize="24" TextAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </DockPanel>
+        </Border>
+    </Grid>
+</UserControl>
