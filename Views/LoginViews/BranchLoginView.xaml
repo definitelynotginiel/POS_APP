@@ -34,7 +34,8 @@
 		           FontSize="22"
                    HorizontalAlignment="Center"			   
                    Margin="0 10 0 25"
-			       FontWeight="Bold"/>
+			       FontWeight="Bold"
+                   />
 
 
                 <!-- TextBoxes -->

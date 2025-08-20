@@ -13,17 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace POS_APP.Views.SidebarViews
+namespace POS_APP.Views.InventoryViews
 {
     /// <summary>
-    /// Interaction logic for POSView.xaml
+    /// Interaction logic for InvMonitorDashboardView.xaml
     /// </summary>
-    public partial class POSView : UserControl
+    public partial class InvMonitorDashboardView : UserControl
     {
-        public POSView()
+        public InvMonitorDashboardView()
         {
             InitializeComponent();
-            DataContext = new POSViewModel();
         }
     }
 }

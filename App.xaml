@@ -13,6 +13,19 @@
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Padding" Value="10,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border 
+                    Background="{TemplateBinding Background}" 
+                    BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="{TemplateBinding BorderThickness}" 
+                    CornerRadius="5" >
+                            <ScrollViewer Margin="0" x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="PBLogin" TargetType="PasswordBox">
@@ -24,6 +37,19 @@
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Padding" Value="10,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border 
+        Background="{TemplateBinding Background}" 
+        BorderBrush="{TemplateBinding BorderBrush}" 
+        BorderThickness="{TemplateBinding BorderThickness}" 
+        CornerRadius="5" >
+                            <ScrollViewer Margin="0" x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="BLogin" TargetType="Button">
@@ -31,7 +57,7 @@
             <Setter Property="Height" Value="50"/>
             <Setter Property="Width" Value="250"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0 10"/>
+            <Setter Property="Margin" Value="0 20 0 0"/>
             <Setter Property="BorderBrush" Value="#130E09"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -111,7 +137,62 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="BMenu" TargetType="Button">    
+            <Setter Property="Height" Value="60"/>
+            <Setter Property="Width" Value="140"/>
+            <Setter Property="Background" Value="#fbfff4"/>
+            <Setter Property="Foreground" Value="#130e09"/>
+            <Setter Property="BorderBrush" Value="#130E09"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
 
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+    Background="{TemplateBinding Background}"
+    BorderBrush="{TemplateBinding BorderBrush}"
+    BorderThickness="{TemplateBinding BorderThickness}"
+    CornerRadius="5"
+    >
+                            <ContentPresenter
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"/>
+                        </Border>
 
+                        <ControlTemplate.Triggers>
+                            <!-- Hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#130e09"/>
+                                <Setter Property="Foreground" Value="#fbfff4"/>
+                            </Trigger>
+
+                            <!-- Pressed -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#130e09"/>
+                                <Setter Property="Foreground" Value="#fbfff4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TMenu" TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontFamily" Value="pack://application:,,,/POS_APP;component/Assets/FONTS/#Josefin Sans Regular"/>
+        </Style>
+        
+        <FontFamily x:Key="JosefinSansRegularFont">
+            pack://application:,,,/POS_APP;component/Assets/FONTS/#Josefin Sans Regular
+        </FontFamily>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource JosefinSansRegularFont}" />
+        </Style>
     </Application.Resources>
 </Application>

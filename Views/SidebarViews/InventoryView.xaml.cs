@@ -1,4 +1,5 @@
-﻿using System;
+﻿using POS_APP.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,8 @@ namespace POS_APP.Views.SidebarViews
         public InventoryView()
         {
             InitializeComponent();
+
+            DataContext = new InventoryViewModel();
         }
     }
 }

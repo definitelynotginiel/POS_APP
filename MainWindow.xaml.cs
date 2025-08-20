@@ -2,7 +2,7 @@
 
 using System.Windows;
 
-
+    
 namespace POS_APP
 {
     /// <summary>
