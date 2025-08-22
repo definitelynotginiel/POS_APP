@@ -4,38 +4,72 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:POS_APP.Views.DashboardViews"
+             xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="300">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
-            <!-- Sidebar -->
+            <!-- Sidebar fixed width -->
             <ColumnDefinition Width="*"/>
             <!-- Content Area -->
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar -->
-        <Border BorderBrush="#130e09" BorderThickness="0 0 2 0" Grid.Column="0">
-            <StackPanel Background="#fbfff4">
-                <Image Source="/Assets/logo.png" Height="150" Margin="10"/>
-                <TextBlock Text="Admin Panel" FontWeight="Bold" FontSize="26" Margin="0,20" TextAlignment="Center"/>
-                <Border BorderBrush="Black" BorderThickness="0 2" Padding="15" >
+        <Border BorderBrush="#130e09" BorderThickness="0 0 2 0" Grid.Column="0" Background="#fbfff4">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Logo + Admin Panel -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Admin name + role -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Menu ListBox -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Clock -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Logout button -->
+                </Grid.RowDefinitions>
+
+                <!-- Logo + Admin Panel -->
+                <Border Grid.Row="0" BorderBrush="#130e09" BorderThickness="0 0 0 2">
+                <StackPanel  Margin="10" HorizontalAlignment="Center">
+                    <Image Source="/Assets/logo.png" Height="150" Margin="0,0,0,10"/>
+                    <TextBlock Text="Admin Panel" FontWeight="Bold" FontSize="26" TextAlignment="Center"/>
+                </StackPanel>
+                </Border>
+
+                <!-- Admin name + role -->
+                <Border Grid.Row="1" BorderBrush="Black" BorderThickness="0,0,0,2" Padding="10">
                     <StackPanel>
-                        <TextBlock FontSize="24" Text="Juan Dela Cruz" TextAlignment="Center" />
-                        <TextBlock FontSize="24" Text="Admin" TextAlignment="Center" />
+                        <TextBlock FontSize="24" Text="Juan Dela Cruz" TextAlignment="Center"/>
+                        <TextBlock FontSize="24" Text="Admin" TextAlignment="Center"/>
                     </StackPanel>
                 </Border>
-                <ListBox FontSize="28"
-         SelectedItem="{Binding SelectedMenu}"
-         ItemsSource="{Binding MenuItems}">
+
+                <!-- Menu ListBox -->
+                <ListBox Grid.Row="2" FontSize="20"
+                         SelectedItem="{Binding SelectedMenu}"
+                         ItemsSource="{Binding MenuItems}"
+                         BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel LastChildFill="True" Margin="5">
+                                <fa:ImageAwesome Icon="{Binding Icon}" Width="20" Height="20"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,10,5"
+                                                 Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"/>
+                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
                     <ListBox.Resources>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListBoxItem">
-                                        <Border x:Name="Bd" 
-                                Background="White"
-                                Padding="5">
+                                        <Border x:Name="Bd" Background="White" Padding="5">
                                             <ContentPresenter />
                                         </Border>
                                         <ControlTemplate.Triggers>
@@ -58,12 +92,9 @@
                         </Style>
                     </ListBox.Resources>
                 </ListBox>
-                <Border Background="#fbfff4" DockPanel.Dock="Bottom"
-HorizontalAlignment="Center"
-		    BorderBrush="#130e09"
-		    BorderThickness="2"
-			VerticalAlignment="Center"
-		Padding="10">
+
+                <!-- Clock -->
+                <Border Grid.Row="3" BorderBrush="#130e09" BorderThickness="2" Padding="10" Margin="0 10" HorizontalAlignment="Center">
                     <StackPanel>
                         <TextBlock Text="{Binding CurrentDay}"  FontWeight="Bold" FontSize="24" TextAlignment="Center"/>
                         <TextBlock Text="{Binding CurrentDate}"  FontWeight="Bold" FontSize="24" TextAlignment="Center"/>
@@ -71,13 +102,13 @@ HorizontalAlignment="Center"
                     </StackPanel>
                 </Border>
 
-                <Button Style="{StaticResource BRole}" Command="{Binding LogoutCommand}" Content="LOG OUT"/>
-                
-            </StackPanel>
+                <!-- Logout button -->
+                <Button Grid.Row="4" Style="{StaticResource BRole}" Command="{Binding LogoutCommand}" Content="LOG OUT" 
+                        Height="40" Margin="10 0"/>
+            </Grid>
         </Border>
 
-        <!-- Main Content -->
-        <ContentControl Grid.Column="1"
-                    Content="{Binding CurrentView}" />
+        <!-- Main Content Area -->
+        <ContentControl Grid.Column="1" Content="{Binding CurrentView}" />
     </Grid>
 </UserControl>

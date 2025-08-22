@@ -1,18 +1,41 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using POS_APP.Models;
-using POS_APP.ViewModels.InventoryViewModels;
 using System.Collections.ObjectModel;
+
 namespace POS_APP.ViewModels.InventoryViewModels;
 
 public partial class InvMonitorDashboardViewModel : ObservableObject
 {
-    private readonly InventoryViewModel _parent;
+    private readonly InventoryViewModel? _parent;
 
-    public ObservableCollection<InventoryItem> AllInventoryItems { get; set; } = new();
+    public ObservableCollection<InventoryItem> AllInventoryItems => _parent?.AllInventoryItems ?? new ObservableCollection<InventoryItem>();
+
+    public ObservableCollection<string> ItemCategories => _parent?.ItemCategories ?? new ObservableCollection<string>();
 
     [ObservableProperty]
     private ObservableCollection<InventoryItem> inventoryItems = new();
+
+
+    public InvMonitorDashboardViewModel(InventoryViewModel? parent)
+    {
+        _parent = parent;
+
+        SelectedCategory = ItemCategories.FirstOrDefault() ?? string.Empty;
+
+        // Initialize non-nullable fields to default values
+        SelectedInventoryItem = new InventoryItem
+        {
+            Name = string.Empty,
+            Category = string.Empty,
+            Unit = string.Empty,
+            Quantity = 0,
+            StockStatus = string.Empty,
+            ExpirationDates = new ObservableCollection<DateTime?>()
+        };
+
+        SelectedUnitType = string.Empty;
+    }
 
     [ObservableProperty]
     private InventoryItem selectedInventoryItem;
@@ -29,47 +52,9 @@ public partial class InvMonitorDashboardViewModel : ObservableObject
     [ObservableProperty]
     private string selectedUnitType;
 
-    public ObservableCollection<string> ItemCategories { get; set; } = [];
-    public InvMonitorDashboardViewModel(InventoryViewModel parent)
-    {
-        _parent = parent;
-        ItemCategories =
-        [
-            "Food Ingredients",
-                "Beverage Ingredients",
-                "Disposable Utensils",
-                "Food Packaging",
-                "Other"
-
-                
-        ];
-
-        // Default to first category, ensuring null safety
-        SelectedCategory = ItemCategories.FirstOrDefault() ?? string.Empty;
-        var Fries = new InventoryItem
-        {
-            Name = "Fries",
-            Category = "Food Ingredients",
-            Unit = "kg",
-            Quantity = 3,
-            StockStatus = "In Stock", // Fix: Set the required 'StockStatus' property
-            ExpirationDates = new ObservableCollection<DateTime?>
-            {
-                DateTime.Now.AddDays(-2), // expired
-                DateTime.Now.AddDays(3),  // near expiry
-                DateTime.Now.AddDays(-2), // expired
-                DateTime.Now.AddDays(3),  // near expiry
-                DateTime.Now.AddDays(30)  // good
-            }
-        };
-
-        AllInventoryItems.Add(Fries);
-        ApplyFilter();
-    }
-
     partial void OnSelectedCategoryChanged(string value)
     {
-        ApplyFilter(); // your existing filtering logic
+        ApplyFilter(); 
     }
 
 
@@ -89,11 +74,8 @@ public partial class InvMonitorDashboardViewModel : ObservableObject
             InventoryItems = new ObservableCollection<InventoryItem>(filtered);
         }
 
-        // update near-expiry/expired counts for the whole filtered list
-
     }
 
-    // New method: sums expiry counts for all items in current category (InventoryItems)
     private void UpdateExpirySummary(InventoryItem item)
     {
         if (item == null || item.ExpirationDates == null)
@@ -115,6 +97,12 @@ public partial class InvMonitorDashboardViewModel : ObservableObject
     [RelayCommand]
     private void GoToStockOut()
     {
-        _parent.ShowStockOutCommand.Execute(null);
+        _parent?.ShowStockOutCommand.Execute(null);
+    }
+
+    [RelayCommand]
+    private void GoToExpireTrack()
+    {
+        _parent?.ShowExpireTrackCommand.Execute(null);
     }
 }

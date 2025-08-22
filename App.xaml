@@ -12,7 +12,7 @@
             <Setter Property="BorderBrush" Value="#130E09"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Padding" Value="10,0,0,0"/>
+            <Setter Property="Padding" Value="38 0 8 0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
@@ -36,7 +36,7 @@
             <Setter Property="BorderBrush" Value="#130E09"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Padding" Value="10,0,0,0"/>
+            <Setter Property="Padding" Value="38,0,8,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="PasswordBox">

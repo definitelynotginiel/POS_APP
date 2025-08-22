@@ -3,82 +3,119 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:POS_APP.Views.InventoryViews"
+             xmlns:conv="clr-namespace:POS_APP.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="1000" d:DesignWidth="1000">
-    <Grid Background="AliceBlue" Margin="16">
+
+    <UserControl.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Grid Background="AliceBlue">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
 
         <!-- Header -->
-        <TextBlock Grid.ColumnSpan="2" 
+        <TextBlock  Grid.Row="0"
                    Text="Stock Out Items" 
                    FontSize="22" 
                    FontWeight="Bold" 
                    HorizontalAlignment="Center" 
-                   Margin="0,0,0,16"/>
+                   Margin="0,0,0,10"/>
 
-        <!-- Left column: category + item list -->
-        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,16,0">
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Background="Beige" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+            <!-- Left column: category + item list -->
+        <StackPanel Grid.Row="0" Margin="0,0,16,0">
             <TextBlock Text="Select Category" FontWeight="SemiBold" Margin="0,0,0,4"/>
             <ComboBox ItemsSource="{Binding ItemCategories}" 
                       SelectedItem="{Binding SelectedCategory}" 
                       Margin="0,0,0,12"/>
 
-            <TextBlock Text="Search Item" FontWeight="SemiBold" Margin="0,0,0,4"/>
-            <TextBox Text="{Binding SearchQuery}" Margin="0,0,0,12"/>
-
-            <TextBlock Text="Select Item Type" FontWeight="SemiBold" Margin="0,0,0,4"/>
-            <ListBox ItemsSource="{Binding FilteredItems}" 
+            <TextBlock Text="Select Item" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <ListBox ItemsSource="{Binding FilteredItems}" 
                      SelectedItem="{Binding SelectedItem}" 
-                     Height="400"/>
-        </StackPanel>
+                     Height="Auto">
+                        <ListBox.Template>
+                            <ControlTemplate TargetType="ListBox">
+                                <DockPanel>
+                                    <!-- Search bar "inside" ListBox -->
+                                    <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
+                         DockPanel.Dock="Top"
+                         />
 
-        <!-- Right column: stock out form -->
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,0">
+                                    <!-- Scrollable items -->
+                                    <ScrollViewer>
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </DockPanel>
+                            </ControlTemplate>
+                        </ListBox.Template>
+                    </ListBox>
+                </StackPanel>
+                <Button  Grid.Row="1" Content="Back to Monitoring Dashboard"
+                            Command="{Binding BackCommand}" 
+                            Height="40"
+                            Width="250"
+                            Margin="0 10"/>
+            </Grid>
+            <!-- Right column: stock out form -->
+        <StackPanel Background="Blue" Grid.Column="1" Margin="0,0,0,0">
 
-            <TextBlock Text="Item Type to be Stocked Out" FontWeight="SemiBold" Margin="0,0,0,4"/>
-            <TextBox Text="{Binding NewItemName}" Margin="0,0,0,12"/>
+            <TextBlock Text="Item Name" FontWeight="SemiBold" Margin="0,0,0,4"/>
+            <TextBox Text="{Binding ItemName}" Margin="0,0,0,12"/>
 
-            <TextBlock Text="Estimated Cost of Item/s to be Stocked Out" FontWeight="SemiBold" Margin="0,0,0,4"/>
-            <TextBox Text="{Binding NewItemCost}" Margin="0,0,0,12"/>
+            <TextBlock Text="Item Pack Quantity" FontWeight="SemiBold" Margin="0,0,0,4"/>
+            <TextBox Text="{Binding PackQuantity}" Margin="0,0,0,12"/>
+
+            <TextBlock Text="Unit of Measurement Per Pack" FontWeight="SemiBold" FontSize="16"/>
+            <StackPanel Orientation="Horizontal" Margin="0,6,0,16">
+                <TextBox Width="140" Text="{Binding Quantity, Mode=TwoWay}" FontSize="16" Margin="0,0,12,0"/>
+                <ComboBox Width="110" ItemsSource="{Binding UnitMeasurementTypes}" SelectedItem="{Binding SelectedUnitType, Mode=TwoWay}" FontSize="16"/>
+            </StackPanel>
+
+            <TextBlock Text="Estimated Unit Cost Per Pack" FontWeight="SemiBold" Margin="0,0,0,4"/>
+            <TextBox Text="{Binding UnitCost}" Margin="0,0,0,12"/>
 
             <TextBlock Text="Item Pack/s Expiration Date" FontWeight="SemiBold" Margin="0,0,0,4"/>
-            <DatePicker SelectedDate="{Binding NewExpirationDate}" Margin="0,0,0,12"/>
+            <DatePicker SelectedDate="{Binding ExpirationDate}" Margin="0,0,0,12"/>
 
             <TextBlock Text="Reason for Stocking Out" FontWeight="SemiBold" Margin="0,0,0,4"/>
             <ComboBox ItemsSource="{Binding StockOutReasons}" 
-                      SelectedItem="{Binding SelectedReason}" 
-                      Margin="0,0,0,12"/>
+                      SelectedItem="{Binding SelectedReason}"/>
+            <TextBox Text="{Binding CustomReason}" 
+                     Margin="0,0,0,20"
+                     Visibility="{Binding IsOtherReasonVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-            <TextBlock Text="Item Pack Quantity" FontWeight="SemiBold" Margin="0,0,0,4"/>
-            <TextBox Text="{Binding NewPackQuantity}" Margin="0,0,0,12"/>
-
-            <TextBlock Text="Unit Measurement Per Pack" FontWeight="SemiBold" Margin="0,0,0,4"/>
-            <ComboBox ItemsSource="{Binding UnitMeasurementTypes}" 
-                      SelectedItem="{Binding NewUnit}" 
-                      Margin="0,0,0,12"/>
-
-            <TextBlock Text="Items to be Stocked Out" FontWeight="Bold" Margin="0,16,0,4"/>
-            <ListBox ItemsSource="{Binding StockOutList}" Height="120"/>
+            <TextBlock Text="Stock-Out Summary" FontSize="18" FontWeight="Bold" Margin="0,20,0,6"/>
+            <TextBlock Text="{Binding StockOutSummary}" 
+                        FontSize="16" 
+                        TextWrapping="Wrap" 
+                        Background="#f0f0f0" 
+                        Padding="10 0 10 10"
+                        Margin="0,0,0,20"/>
+            <!--Stockout summary where  display all inputted info before click stock out button-->  
 
             <Button Content="Stock Out" 
                     Command="{Binding StockOutCommand}" 
                     Width="120" Height="40" 
                     HorizontalAlignment="Left" 
                     Margin="0,12,0,0"/>
+            
         </StackPanel>
 
         <!-- Footer -->
-        <Button Grid.Row="2" Grid.Column="0" Content="Back to Monitoring Dashboard"
-                Command="{Binding BackCommand}" 
-                Margin="0,12,0,0" Height="40"/>
+        </Grid>
     </Grid>
 </UserControl>

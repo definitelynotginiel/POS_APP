@@ -10,30 +10,85 @@ namespace POS_APP.ViewModels
 {
     public partial class InventoryViewModel : ObservableObject
     {
-        [RelayCommand]
-        private void ShowStockOut()
-        {
-            CurrentInventoryView = new InvStockOutViewModel(this);
-        }
+        public InventoryViewModel()
+        { 
 
-        [RelayCommand]
-        private void ShowDashboard()
+            SelectedCategory = ItemCategories.FirstOrDefault() ?? string.Empty;
+            SelectedUnitType = UnitMeasurementTypes.FirstOrDefault() ?? string.Empty;
+            NewItemName = string.Empty;
+
+            // --- Sample inventory items ---
+            AllInventoryItems = new ObservableCollection<InventoryItem>
+    {
+        new InventoryItem
         {
+            Name = "Sugar",
+            Category = "Food Ingredients",
+            Quantity = 50,
+            Unit = "kg",
+            StockStatus = "Available",
+            ExpirationDates = new ObservableCollection<DateTime?>
+            {
+                DateTime.Today.AddDays(30),
+                DateTime.Today.AddDays(60)
+            }
+        },
+        new InventoryItem
+        {
+            Name = "Flour",
+            Category = "Food Ingredients",
+            Quantity = 100,
+            Unit = "kg",
+            StockStatus = "Available",
+            ExpirationDates = new ObservableCollection<DateTime?>
+            {
+                DateTime.Today.AddDays(15),
+                DateTime.Today.AddDays(45)
+            }
+        },
+        new InventoryItem
+        {
+            Name = "Coffee Powder",
+            Category = "Beverage Ingredients",
+            Quantity = 25,
+            Unit = "kg",
+            StockStatus = "Available",
+            ExpirationDates = new ObservableCollection<DateTime?>
+            {
+                DateTime.Today.AddDays(10),
+                DateTime.Today.AddDays(40)
+            }
+        },
+        new InventoryItem
+        {
+            Name = "Plastic Cups",
+            Category = "Disposable Utensils",
+            Quantity = 200,
+            Unit = "pcs",
+            StockStatus = "Available",
+            ExpirationDates = new ObservableCollection<DateTime?>()
+        },
+        new InventoryItem
+        {
+            Name = "Burger Wrapper",
+            Category = "Food Packaging",
+            Quantity = 500,
+            Unit = "pcs",
+            StockStatus = "Available",
+            ExpirationDates = new ObservableCollection<DateTime?>()
+        }
+    };
+            // Initialize child view
             CurrentInventoryView = new InvMonitorDashboardViewModel(this);
         }
-
-        [ObservableProperty]
-        private object? currentInventoryView;
-
-            partial void OnSelectedCategoryChanged(string value) => OnPropertyChanged(nameof(StockInSummary));
-            partial void OnNewItemNameChanged(string value) => OnPropertyChanged(nameof(StockInSummary));
-            partial void OnNewPackQuantityChanged(double value) => OnPropertyChanged(nameof(StockInSummary));
-            partial void OnNewQuantityChanged(double value) => OnPropertyChanged(nameof(StockInSummary));
-            partial void OnSelectedUnitTypeChanged(string value) => OnPropertyChanged(nameof(StockInSummary));
-            partial void OnNewUnitCostChanged(double value) => OnPropertyChanged(nameof(StockInSummary));
-            partial void OnNewExpirationDateChanged(DateTime? value) => OnPropertyChanged(nameof(StockInSummary));
-
         public ObservableCollection<InventoryItem> AllInventoryItems { get; set; } = new();
+
+        public ObservableCollection<string> ItemCategories { get; set; } = ["Food Ingredients", "Beverage Ingredients",
+            "Disposable Utensils", "Food Packaging", "Other" ];
+        public ObservableCollection<string> UnitMeasurementTypes { get; set; } = ["pcs", "kg", "g", "L"];
+        public ObservableCollection<string> Sources { get; set; } = ["Supplier A", "Supplier B"];
+        public ObservableCollection<string> SourceNames { get; set; } = ["Source 1", "Source 2"];
+        public ObservableCollection<string> StockOutReasons { get; set; } = ["Damaged", "Expired", "Sold", "Other"];
 
         [ObservableProperty]
         private string selectedCategory;
@@ -41,36 +96,28 @@ namespace POS_APP.ViewModels
         [ObservableProperty]
         private string selectedUnitType;
 
-        // New fields for stock-in form
-        [ObservableProperty] private string newItemName;
-        [ObservableProperty] private double newPackQuantity;
-        [ObservableProperty] private double newQuantity;
-        [ObservableProperty] private double newUnitCost;
-        [ObservableProperty] private DateTime? newExpirationDate;
+        [ObservableProperty] 
+        private string newItemName;
 
-        public ObservableCollection<string> ItemCategories { get; set; } = [];
-        public ObservableCollection<string> UnitMeasurementTypes { get; set; } = ["pcs", "kg", "g", "L"];
-        public ObservableCollection<string> Sources { get; set; } = ["Supplier A", "Supplier B"];
-        public ObservableCollection<string> SourceNames { get; set; } = ["Source 1", "Source 2"];
+        [ObservableProperty] 
+        private double newPackQuantity;
 
-        public InventoryViewModel()
-        {
-            CurrentInventoryView = new InvMonitorDashboardViewModel(this);
+        [ObservableProperty] 
+        private double newQuantity;
 
-            ItemCategories =
-            [
-                "Food Ingredients",
-                "Beverage Ingredients",
-                "Disposable Utensils",
-                "Food Packaging",
-                "Other"
-            ];
-            SelectedCategory = ItemCategories.FirstOrDefault() ?? string.Empty;
-        }
+        [ObservableProperty] 
+        private double newUnitCost;
 
-        
+        [ObservableProperty] 
+        private DateTime? newExpirationDate;
 
-
+        partial void OnSelectedCategoryChanged(string value) => OnPropertyChanged(nameof(StockInSummary));
+        partial void OnNewItemNameChanged(string value) => OnPropertyChanged(nameof(StockInSummary));
+        partial void OnNewPackQuantityChanged(double value) => OnPropertyChanged(nameof(StockInSummary));
+        partial void OnNewQuantityChanged(double value) => OnPropertyChanged(nameof(StockInSummary));
+        partial void OnSelectedUnitTypeChanged(string value) => OnPropertyChanged(nameof(StockInSummary));
+        partial void OnNewUnitCostChanged(double value) => OnPropertyChanged(nameof(StockInSummary));
+        partial void OnNewExpirationDateChanged(DateTime? value) => OnPropertyChanged(nameof(StockInSummary));
 
         public string StockInSummary
         {
@@ -129,6 +176,7 @@ namespace POS_APP.ViewModels
                 item.ExpirationDates.Add(dateToAdd);
             }
 
+            
             // Show success message
             System.Windows.MessageBox.Show("Stock-in successful!", "Success", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
 
@@ -138,6 +186,27 @@ namespace POS_APP.ViewModels
             NewQuantity = 0;
             NewUnitCost = 0;
             NewExpirationDate = null;
+        }
+
+        [ObservableProperty]
+        private object? currentInventoryView;
+
+        [RelayCommand]
+        private void ShowStockOut()
+        {
+            CurrentInventoryView = new InvStockOutViewModel(this);
+        }
+
+        [RelayCommand]
+        private void ShowDashboard()
+        {
+            CurrentInventoryView = new InvMonitorDashboardViewModel(this);
+        }
+
+        [RelayCommand]
+        private void ShowExpireTrack()
+        {
+            CurrentInventoryView = new InvExpirationTrackViewModel(this);
         }
     }
 }

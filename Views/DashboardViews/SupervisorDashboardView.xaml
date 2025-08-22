@@ -25,7 +25,7 @@
                         <TextBlock FontSize="24" Text="Supervisor" TextAlignment="Center" />
                     </StackPanel>
                 </Border>
-                <ListBox FontSize="24"
+                <ListBox FontSize="28"
      SelectedItem="{Binding SelectedMenu}"
      ItemsSource="{Binding MenuItems}">
                     <ListBox.Resources>
