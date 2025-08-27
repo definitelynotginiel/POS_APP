@@ -108,6 +108,9 @@ public partial class InvExpirationTrackViewModel : ObservableObject
         if (item.PacksCount == 0 && item.Quantity <= 0)
             _parent.AllInventoryItems.Remove(item);
 
+        // Update the total items count
+        TotalItemsCount = InventoryItems.Count;
+
         // Recalculate summary counts
         CalculateSummaryCounts();
     }
