@@ -28,6 +28,7 @@
     <Resource Include="Assets\FONTS\JosefinSans-Regular.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Icons\Font Awesome 7 Free Solid.otf" />
     <Resource Include="Assets\logo.ico" />
   </ItemGroup>
 

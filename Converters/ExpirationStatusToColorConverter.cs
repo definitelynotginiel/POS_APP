@@ -35,13 +35,13 @@ public class ExpirationStatusToIconConverter : IValueConverter
         {
             return status switch
             {
-                "Expired" => FontAwesomeIcon.ExclamationCircle,
-                "Near Expiry" => FontAwesomeIcon.ExclamationTriangle,
-                "Good" => FontAwesomeIcon.CheckCircle,
-                _ => FontAwesomeIcon.QuestionCircle
+                "Expired" => "\uf06a",       // exclamation-circle
+                "Near Expiry" => "\uf071",   // exclamation-triangle
+                "Good" => "\uf058",          // check-circle
+                _ => "\uf059"                // question-circle
             };
         }
-        return FontAwesomeIcon.QuestionCircle;
+        return "\uf059"; // question-circle
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

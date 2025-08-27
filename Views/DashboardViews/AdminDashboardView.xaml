@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:POS_APP.Views.DashboardViews"
-             xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="300">
+
+    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
@@ -33,10 +35,10 @@
 
                 <!-- Logo + Admin Panel -->
                 <Border Grid.Row="0" BorderBrush="#130e09" BorderThickness="0 0 0 2">
-                <StackPanel  Margin="10" HorizontalAlignment="Center">
-                    <Image Source="/Assets/logo.png" Height="150" Margin="0,0,0,10"/>
-                    <TextBlock Text="Admin Panel" FontWeight="Bold" FontSize="26" TextAlignment="Center"/>
-                </StackPanel>
+                    <StackPanel Margin="10" HorizontalAlignment="Center">
+                        <Image Source="/Assets/logo.png" Height="150" Margin="0,0,0,10"/>
+                        <TextBlock Text="Admin Panel" FontWeight="Bold" FontSize="26" TextAlignment="Center"/>
+                    </StackPanel>
                 </Border>
 
                 <!-- Admin name + role -->
@@ -55,10 +57,10 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <DockPanel LastChildFill="True" Margin="5">
-                                <fa:ImageAwesome Icon="{Binding Icon}" Width="20" Height="20"
-                                                 VerticalAlignment="Center"
-                                                 Margin="0,0,10,5"
-                                                 Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"/>
+                                <TextBlock Text="{Binding Icon}" 
+                                           Style="{StaticResource Icon}"
+                                           Margin="0,0,10,0"
+                                           Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"/>
                                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
                             </DockPanel>
                         </DataTemplate>
@@ -96,9 +98,9 @@
                 <!-- Clock -->
                 <Border Grid.Row="3" BorderBrush="#130e09" BorderThickness="2" Padding="10" Margin="0 10" HorizontalAlignment="Center">
                     <StackPanel>
-                        <TextBlock Text="{Binding CurrentDay}"  FontWeight="Bold" FontSize="24" TextAlignment="Center"/>
-                        <TextBlock Text="{Binding CurrentDate}"  FontWeight="Bold" FontSize="24" TextAlignment="Center"/>
-                        <TextBlock Text="{Binding CurrentTime}"  FontWeight="Bold" FontSize="24" TextAlignment="Center"/>
+                        <TextBlock Text="{Binding CurrentDay}" FontWeight="Bold" FontSize="24" TextAlignment="Center"/>
+                        <TextBlock Text="{Binding CurrentDate}" FontWeight="Bold" FontSize="24" TextAlignment="Center"/>
+                        <TextBlock Text="{Binding CurrentTime}" FontWeight="Bold" FontSize="24" TextAlignment="Center"/>
                     </StackPanel>
                 </Border>
 

@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:POS_APP.Views.LoginViews"
-             xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="800">
 
@@ -45,15 +44,13 @@
                     <!-- TextBox -->
                     <TextBox Style="{StaticResource TBLogin}"
              Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
-                    <!-- left padding for icon -->
-
                     <!-- Icon inside -->
-                    <fa:ImageAwesome Icon="User"
-                     Width="24" Height="24"
-                     VerticalAlignment="Center"
-                     HorizontalAlignment="Left"
-                     Margin="8,0,0,0"
-                     Foreground="#130e09"/>
+                    <TextBlock Style="{StaticResource Icon}" Text="&#xf007;"
+           VerticalAlignment="Center"
+           HorizontalAlignment="Left"
+           Margin="8,0,0,0"
+           Foreground="#130e09"
+           FontSize="24"/>
                 </Grid>
 
 
@@ -69,12 +66,12 @@
              Text="{Binding BranchId, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!-- Icon inside -->
-                    <fa:ImageAwesome Icon="Key"
-                     Width="24" Height="24"
-                     VerticalAlignment="Center"
-                     HorizontalAlignment="Left"
-                     Margin="8,0,0,0"
-                     Foreground="#130e09"/>
+                    <TextBlock Style="{StaticResource Icon}" Text="&#xf2c1;"
+           VerticalAlignment="Center"
+           HorizontalAlignment="Left"
+           Margin="8,0,0,0"
+           Foreground="#130e09"
+           FontSize="24"/>
                 </Grid>
 
 
@@ -92,13 +89,13 @@
                  PasswordChanged="PasswordBox_PasswordChanged"/>
 
                     <!-- Icon inside -->
-                    <fa:ImageAwesome Icon="Lock"
-                     Width="24" Height="24"
-                     VerticalAlignment="Center"
-                     HorizontalAlignment="Left"
-                     Margin="8,0,0,0"
-                     Foreground="#130e09"/>
-                </Grid>
+                    <TextBlock Style="{StaticResource Icon}" Text="&#xf023;"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Margin="8,0,0,0"
+                                Foreground="#130e09"
+                                FontSize="24"/> 
+                                            </Grid>
 
 
 

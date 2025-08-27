@@ -36,7 +36,7 @@
         <Border Grid.Row="0" Background="#FF2C3E50" Padding="20,15">
             <TextBlock Text="Stock Out Items" 
                        Foreground="White" 
-                       FontSize="22" 
+                       FontSize="28" 
                        FontWeight="Bold"
                        VerticalAlignment="Center"/>
         </Border>
@@ -76,9 +76,7 @@
                                          BorderThickness="0" Background="Transparent"
                                          Padding="12,0,40,0" VerticalContentAlignment="Center"
                                          FontSize="20" Margin="0"/>
-                                <Path Data="M15.5,14L20.5,19L19,20.5L14,15.5C12.8,16.5 11.3,17 9.5,17C5.4,17 2,13.6 2,9.5C2,5.4 5.4,2 9.5,2C13.6,2 17,5.4 17,9.5C17,11.3 16.5,12.8 15.5,14ZM9.5,3C6.5,3 4,5.5 4,9.5C4,13.5 6.5,16 9.5,16C12.5,16 15,13.5 15,9.5C15,5.5 12.5,3 9.5,3Z" 
-                                      Stretch="Uniform" Fill="#FF888888" Width="20" Height="20"
-                                      HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <TextBlock Text="&#xf002;" Foreground="Gray" FontSize="20" Style="{StaticResource Icon}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0" />
                             </Grid>
                         </Border>
                     </StackPanel>
@@ -142,10 +140,10 @@
                         <TextBlock Style="{StaticResource FormLabel}" Text="Unit of Measurement Per Pack"/>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
                             <TextBox Width="140" Text="{Binding Quantity, Mode=TwoWay}" 
-                                     Height="40" FontSize="16" Margin="0,0,12,0"/>
+                                     Height="40" VerticalContentAlignment="Center" FontSize="20" Margin="0,0,12,0"/>
                             <ComboBox Width="160" ItemsSource="{Binding UnitMeasurementTypes}" 
                                       SelectedItem="{Binding SelectedUnitType, Mode=TwoWay}" 
-                                      Height="40" FontSize="16"/>
+                                      Height="40" VerticalContentAlignment="Center" FontSize="20" />
                         </StackPanel>
 
                         <TextBlock Style="{StaticResource FormLabel}" Text="Estimated Unit Cost Per Pack"/>

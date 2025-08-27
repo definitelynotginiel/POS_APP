@@ -192,6 +192,14 @@
             pack://application:,,,/POS_APP;component/Assets/FONTS/#Josefin Sans Regular
         </FontFamily>
 
+        <FontFamily x:Key="FontAwesomeSolidFont">
+            pack://application:,,,/POS_APP;component/Assets/Icons/#Font Awesome 7 Free Solid
+        </FontFamily>
+
+        <Style x:Key="Icon" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource FontAwesomeSolidFont}"/>
+        </Style>
+
         <Style TargetType="TextBlock">
             <Setter Property="FontFamily" Value="{StaticResource JosefinSansRegularFont}" />
         </Style>
