@@ -50,7 +50,7 @@
 
         <!-- Header -->
         <Border Grid.Row="0" Background="#FF2C3E50" Padding="20,15">
-            <TextBlock Text="Stock In New Items" 
+            <TextBlock Text="Stock In New Items woah" 
                        Foreground="White" 
                        FontSize="28" 
                        FontWeight="Bold"
