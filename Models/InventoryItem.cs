@@ -1,20 +1,32 @@
-﻿    using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
 
-    namespace POS_APP.Models
+namespace POS_APP.Models
+{
+    public class InventoryItem
     {
-        public class InventoryItem
-        {
-            public required string Name { get; set; }
-            public required string Category { get; set; }
+        public required string Name { get; set; }
+        public required string Category { get; set; }
+        public required string Unit { get; set; }
 
-            public int Packs => ExpirationDates?.Count ?? 0; // total packs
-            public required string StockStatus { get; set; }
+        public string StockStatus { get; set; } = "Good";
+        public double Threshold { get; set; } = 0;
 
-            // Track expiration per pack internally
-            public ObservableCollection<DateTime?> ExpirationDates { get; set; } = new();
-            public double Quantity { get; set; }      // total quantity
-            public required string Unit { get; set; }
+        // Packs hold per-pack quantity + expiration
+        public ObservableCollection<ItemPack> Packs { get; set; } = new();
 
-            public string QuantityDisplay => $"{Quantity} {Unit}";
-        }
+        public int PacksCount => Packs?.Count ?? 0;
+
+        // ⛔ Quantity is computed (read-only). Don’t assign to it anywhere.
+        public double Quantity => Packs?.Sum(p => p.PackQuantity) ?? 0;
+
+        public string QuantityDisplay => $"{Quantity} {Unit}";
     }
+
+    public class ItemPack
+    {
+        public int PackNumber { get; set; }
+        public DateTime? ExpirationDate { get; set; }
+        public double PackQuantity { get; set; }
+    }
+}

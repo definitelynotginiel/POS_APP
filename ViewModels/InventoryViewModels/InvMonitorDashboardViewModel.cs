@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using POS_APP.Models;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace POS_APP.ViewModels.InventoryViewModels;
 
@@ -16,25 +17,35 @@ public partial class InvMonitorDashboardViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<InventoryItem> inventoryItems = new();
 
+    [ObservableProperty]
+    private string searchText = string.Empty;
+
+    partial void OnSearchTextChanged(string value)
+    {
+        ApplyFilter();
+    }
 
     public InvMonitorDashboardViewModel(InventoryViewModel? parent)
     {
         _parent = parent;
 
-        SelectedCategory = ItemCategories.FirstOrDefault() ?? string.Empty;
-
-        // Initialize non-nullable fields to default values
-        SelectedInventoryItem = new InventoryItem
+        if (ItemCategories.Count > 0)
         {
-            Name = string.Empty,
-            Category = string.Empty,
-            Unit = string.Empty,
-            Quantity = 0,
-            StockStatus = string.Empty,
-            ExpirationDates = new ObservableCollection<DateTime?>()
-        };
+            SelectedCategory = ItemCategories.First();
+        }
+        else
+        {
+            SelectedCategory = string.Empty;
+        }
 
-        SelectedUnitType = string.Empty;
+        // Initialize with all items if no category is selected
+        if (string.IsNullOrEmpty(SelectedCategory))
+        {
+            InventoryItems = new ObservableCollection<InventoryItem>(AllInventoryItems);
+        }
+
+        // Calculate initial summary counts
+        CalculateSummaryCounts();
     }
 
     [ObservableProperty]
@@ -47,51 +58,106 @@ public partial class InvMonitorDashboardViewModel : ObservableObject
     private int expiredCount;
 
     [ObservableProperty]
-    private string selectedCategory;
+    private int goodStockCount;
 
     [ObservableProperty]
-    private string selectedUnitType;
+    private int totalItemsCount;
+
+    [ObservableProperty]
+    private int lowStockCount;
+
+    [ObservableProperty]
+    private string selectedCategory;
 
     partial void OnSelectedCategoryChanged(string value)
     {
-        ApplyFilter(); 
+        ApplyFilter();
+        CalculateSummaryCounts();
     }
 
-
-    partial void OnSelectedInventoryItemChanged(InventoryItem value) => UpdateExpirySummary(value); // always update totals
+    partial void OnSelectedInventoryItemChanged(InventoryItem value)
+    {
+        UpdateExpirySummary(value);
+    }
 
     private void ApplyFilter()
     {
-        if (string.IsNullOrEmpty(SelectedCategory))
+        var filtered = AllInventoryItems.AsEnumerable();
+
+        // Apply category filter
+        if (!string.IsNullOrEmpty(SelectedCategory) && SelectedCategory != "All Categories")
         {
-            InventoryItems.Clear();
-        }
-        else
-        {
-            var filtered = AllInventoryItems
-                .Where(i => i.Category == SelectedCategory)
-                .ToList();
-            InventoryItems = new ObservableCollection<InventoryItem>(filtered);
+            filtered = filtered.Where(i => i.Category == SelectedCategory);
         }
 
+        // Apply search filter
+        if (!string.IsNullOrEmpty(SearchText))
+        {
+            filtered = filtered.Where(i =>
+                i.Name.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
+                (i.Category?.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ?? false));
+        }
+
+        InventoryItems = new ObservableCollection<InventoryItem>(filtered);
+        TotalItemsCount = InventoryItems.Count;
+    }
+
+    private void CalculateSummaryCounts()
+    {
+        // Calculate counts for all items in the current view
+        TotalItemsCount = InventoryItems.Count;
+
+        LowStockCount = InventoryItems.Count(i =>
+            i.StockStatus == "Low Stock");
+
+        // Calculate expiry counts across all items
+        var now = DateTime.Now;
+
+        NearExpiryCount = InventoryItems.Sum(item =>
+            item.Packs?.Count(p =>
+                p.ExpirationDate.HasValue &&
+                p.ExpirationDate.Value > now &&
+                p.ExpirationDate.Value <= now.AddDays(7)) ?? 0);
+
+        ExpiredCount = InventoryItems.Sum(item =>
+            item.Packs?.Count(p =>
+                p.ExpirationDate.HasValue &&
+                p.ExpirationDate.Value < now) ?? 0);
+
+        GoodStockCount = InventoryItems.Sum(item =>
+            item.Packs?.Count(p =>
+                p.ExpirationDate.HasValue &&
+                p.ExpirationDate.Value > now.AddDays(7)) ?? 0);
     }
 
     private void UpdateExpirySummary(InventoryItem item)
     {
-        if (item == null || item.ExpirationDates == null)
+        if (item == null || item.Packs == null)
         {
-            NearExpiryCount = 0;
-            ExpiredCount = 0;
             return;
         }
 
         var now = DateTime.Now;
-        NearExpiryCount = item.ExpirationDates.Count(d => d.HasValue &&
-                                                         d.Value > now &&
-                                                         d.Value <= now.AddDays(7));
 
-        ExpiredCount = item.ExpirationDates.Count(d => d.HasValue &&
-                                                       d.Value < now);
+        // Update counts for the selected item
+        NearExpiryCount = item.Packs.Count(p =>
+            p.ExpirationDate.HasValue &&
+            p.ExpirationDate.Value > now &&
+            p.ExpirationDate.Value <= now.AddDays(7));
+
+        ExpiredCount = item.Packs.Count(p =>
+            p.ExpirationDate.HasValue &&
+            p.ExpirationDate.Value < now);
+
+        GoodStockCount = item.Packs.Count(p =>
+            p.ExpirationDate.HasValue &&
+            p.ExpirationDate.Value > now.AddDays(7));
+    }
+
+    [RelayCommand]
+    private void GoToStockIn()
+    {
+        _parent?.ShowStockInCommand.Execute(null);
     }
 
     [RelayCommand]
@@ -104,5 +170,11 @@ public partial class InvMonitorDashboardViewModel : ObservableObject
     private void GoToExpireTrack()
     {
         _parent?.ShowExpireTrackCommand.Execute(null);
+    }
+
+    [RelayCommand]
+    private void GoToRegistry()
+    {
+        _parent?.ShowRegistryCommand.Execute(null);
     }
 }

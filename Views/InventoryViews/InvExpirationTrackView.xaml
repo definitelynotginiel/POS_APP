@@ -3,78 +3,183 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
+             xmlns:conv="clr-namespace:POS_APP.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    
-    <Grid Background="AliceBlue">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> 
-            <!--Expiration Tracking Header-->
-            <RowDefinition Height="*"/>
-            <!--Main Content Area-->
-        </Grid.RowDefinitions>
-        <DockPanel Grid.Row="0" Margin="0,0,0,15">
-            <TextBlock Text="Expiration Tracking" 
-                       FontSize="22" FontWeight="Bold" 
-                       DockPanel.Dock="Left"/>
-            <TextBlock Text="Date Today: July 13, 2026 | 7/13/2026"
-                       FontSize="14" 
-                       HorizontalAlignment="Right"
-                       DockPanel.Dock="Right"/>
-        </DockPanel>
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <!-- Dropdown Category, Datagrid -->
-                <RowDefinition Height="*"/>
-                <!-- Back Button -->
-            </Grid.RowDefinitions>
-            
-            <StackPanel Grid.Row="0">
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                    <TextBlock Text="Categories:" VerticalAlignment="Center" FontSize="16" Margin="0,0,8,0"/>
-                    <ComboBox Width="200"
-              ItemsSource="{Binding ItemCategories}"
-              SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
-              FontSize="16"/>
-                </StackPanel>
-                <DataGrid 
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  IsReadOnly="True"
-                  HeadersVisibility="Column"
-                  AlternatingRowBackground="LightGray"
-                  RowHeaderWidth="0"
-                  Margin="0,0,0,15"
-                  ItemsSource="{Binding InventoryItems}"
-                  SelectedItem="{Binding SelectedInventoryItem, Mode=TwoWay}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Items" Binding="{Binding ItemName}" Width="*"/>
-                        <DataGridTextColumn Header="Measurement Type" Binding="{Binding Unit}" Width="*"/>
-                        <DataGridTextColumn Header="Expiration Status" Binding="{Binding Status}" Width="*"/>
-                        <DataGridTextColumn Header="Expiration Dates" Binding="{Binding ExpirationDate}" Width="*"/>
+             d:DesignHeight="600" d:DesignWidth="1000">
 
-                        <!-- Stock Out Button Column -->
-                        <DataGridTemplateColumn Header="Stock Out" Width="100">
+    <UserControl.Resources>
+        <conv:ExpirationStatusToColorConverter x:Key="StatusColorConverter"/>
+        <conv:ExpirationStatusToIconConverter x:Key="StatusIconConverter"/>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FF2C3E50"/>
+            <Setter Property="BorderBrush" Value="#FF2C3E50"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="20,0"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="#FFF5F5F5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#FF2C3E50" Padding="20,15">
+            <DockPanel>
+                <TextBlock Text="Expiration Tracking" 
+                           Foreground="White"
+                           FontSize="22" 
+                           FontWeight="Bold" 
+                           DockPanel.Dock="Left"/>
+                <TextBlock Text="{Binding CurrentDate, StringFormat='Date Today: MMMM dd, yyyy | M/d/yyyy'}"
+                           Foreground="White"
+                           FontSize="14" 
+                           HorizontalAlignment="Right"
+                           DockPanel.Dock="Right"/>
+            </DockPanel>
+        </Border>
+
+        <!-- Summary Cards -->
+        <WrapPanel Grid.Row="1" Margin="20,15,20,10" HorizontalAlignment="Center">
+            <!-- Total Items Card -->
+            <Border Background="White" CornerRadius="6" Padding="15" 
+                    Margin="5" Width="140" Height="80"
+                    BorderThickness="1" BorderBrush="#FFE0E0E0">
+                <StackPanel>
+                    <TextBlock Text="Total Items" FontSize="12" Foreground="#FF666666"/>
+                    <TextBlock Text="{Binding TotalItemsCount}" FontSize="20" 
+                               FontWeight="Bold" Foreground="#FF2C3E50"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Near Expiry Card -->
+            <Border Background="#FFFFF8E1" CornerRadius="6" Padding="15" 
+                    Margin="5" Width="140" Height="80">
+                <StackPanel>
+                    <TextBlock Text="Near Expiry" FontSize="12" Foreground="#FF8A6D3B"/>
+                    <TextBlock Text="{Binding NearExpiryCount}" FontSize="20" 
+                               FontWeight="Bold" Foreground="#FF8A6D3B"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Expired Card -->
+            <Border Background="#FFFBEBEE" CornerRadius="6" Padding="15" 
+                    Margin="5" Width="140" Height="80">
+                <StackPanel>
+                    <TextBlock Text="Expired" FontSize="12" Foreground="#FFA94442"/>
+                    <TextBlock Text="{Binding ExpiredCount}" FontSize="20" 
+                               FontWeight="Bold" Foreground="#FFA94442"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Good Stock Card -->
+            <Border Background="#FFE8F5E9" CornerRadius="6" Padding="15" 
+                    Margin="5" Width="140" Height="80">
+                <StackPanel>
+                    <TextBlock Text="Good Stock" FontSize="12" Foreground="#FF3C763D"/>
+                    <TextBlock Text="{Binding GoodStockCount}" FontSize="20" 
+                               FontWeight="Bold" Foreground="#FF3C763D"/>
+                </StackPanel>
+            </Border>
+        </WrapPanel>
+
+        <!-- Main Content -->
+        <Border Grid.Row="2" Margin="20,0,20,20" Background="White" CornerRadius="6"
+                BorderThickness="1" BorderBrush="#FFE0E0E0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Filter Section -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="15,15,15,10">
+                    <TextBlock Text="Filter by Category:" VerticalAlignment="Center" 
+                               FontSize="16" FontWeight="SemiBold" Margin="0,0,8,0"/>
+                    <ComboBox Width="220" Height="35"
+                              ItemsSource="{Binding ItemCategories}"
+                              SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                              FontSize="14"/>
+
+                    <!-- Status Filter -->
+                    <TextBlock Text="Status:" VerticalAlignment="Center" 
+                               FontSize="16" FontWeight="SemiBold" Margin="20,0,8,0"/>
+                    <ComboBox Width="150" Height="35"
+                              ItemsSource="{Binding StatusFilters}"
+                              SelectedItem="{Binding SelectedStatusFilter, Mode=TwoWay}"
+                              FontSize="14"/>
+                </StackPanel>
+
+                <!-- DataGrid -->
+                <DataGrid Grid.Row="1" Margin="10,0,10,10"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          HeadersVisibility="Column"
+                          AlternatingRowBackground="#FFF9F9F9"
+                          RowHeaderWidth="0"
+                          ItemsSource="{Binding InventoryItems}"
+                          SelectedItem="{Binding SelectedInventoryItem, Mode=TwoWay}">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Item Name" Binding="{Binding ItemName}" Width="2*" />
+                        <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="1.5*" />
+                        <DataGridTextColumn Header="Quantity" Binding="{Binding QuantityDisplay}" Width="1*" />
+
+                        <!-- Expiration Status with Color Coding -->
+                        <DataGridTemplateColumn Header="Expiration Status" Width="1.5*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="⛔"
-                                    ToolTip="Stock Out"
-                                    Command="{Binding DataContext.StockOutCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding}" />
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <fa:ImageAwesome Icon="{Binding Status, Converter={StaticResource StatusIconConverter}}" 
+                                                         Width="16" Height="16" 
+                                                         Foreground="{Binding Status, Converter={StaticResource StatusColorConverter}}"
+                                                         Margin="0,0,8,0"/>
+                                        <TextBlock Text="{Binding Status}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Header="Expiration Date" Binding="{Binding ExpirationDate, StringFormat='MM/dd/yyyy'}" Width="1.2*" />
+                        <DataGridTextColumn Header="Days Remaining" Binding="{Binding DaysRemaining}" Width="1*" />
+
+                        <!-- Stock Out Button Column -->
+                        <DataGridTemplateColumn Header="Action" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding DataContext.StockOutCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip="Stock Out Item"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Padding="5" Height="30" Width="30">
+                                        <fa:ImageAwesome Icon="MinusCircle" Width="16" Height="16" Foreground="#FFE74C3C"/>
+                                    </Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-            </StackPanel>
-            <Button Grid.Row="1"
-            Content="Back to Monitoring Dashboard"
-            Width="250"
-            Height="35"
-            HorizontalAlignment="Left"
-            Command="{Binding BackCommand}"/>
-        </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Footer -->
+        <Border Grid.Row="3" Background="White" BorderBrush="#FFE0E0E0" BorderThickness="1,1,0,0" Padding="20">
+            <Button Content="Back to Monitoring Dashboard"
+                    Width="250"
+                    Style="{StaticResource SecondaryButton}"
+                    HorizontalAlignment="Left"
+                    Command="{Binding BackCommand}"/>
+        </Border>
     </Grid>
 </UserControl>

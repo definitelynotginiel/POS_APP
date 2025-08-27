@@ -1,0 +1,213 @@
+﻿<UserControl x:Class="POS_APP.Views.InventoryViews.InvStockInView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:POS_APP.Views.InventoryViews"
+             mc:Ignorable="d" 
+             d:DesignHeight="1200" d:DesignWidth="1000">
+
+    <UserControl.Resources>
+        <Style x:Key="FormLabel" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+
+        <Style x:Key="FormControl" TargetType="Control">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF2C3E50"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="20,0"/>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FF2C3E50"/>
+            <Setter Property="BorderBrush" Value="#FF2C3E50"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="20,0"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="#FFF5F5F5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Header -->
+            <RowDefinition Height="Auto"/>
+            <!-- Information Note -->
+            <RowDefinition Height="Auto"/>
+            <!-- Form Fields Row 1 -->
+            <RowDefinition Height="Auto"/>
+            <!-- Form Fields Row 2 -->
+            <RowDefinition Height="Auto"/>
+            <!-- Form Fields Row 3 -->
+            <RowDefinition Height="Auto"/>
+            <!-- Expiration Date -->
+            <RowDefinition Height="Auto"/>
+            <!-- Summary -->
+            <RowDefinition Height="Auto"/>
+            <!-- Stock In Button -->
+            <RowDefinition Height="*"/>
+            <!-- Spacer -->
+            <RowDefinition Height="Auto"/>
+            <!-- Back Button -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#FF2C3E50" Padding="20,15">
+            <TextBlock Text="Stock In New Items" 
+                       Foreground="White" 
+                       FontSize="22" 
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+        </Border>
+
+        <!-- Information Note - Centered -->
+        <Border Grid.Row="1" Width="600" Background="#FFF9F9F9" BorderBrush="#FFE0E0E0" BorderThickness="1" 
+                CornerRadius="4" Padding="12" Margin="20,15,20,20" HorizontalAlignment="Stretch">
+            <TextBlock Text="* Each item pack with different expiration dates must be stocked in separately"
+                       FontSize="14" Foreground="#FF666666" TextWrapping="Wrap"
+                       HorizontalAlignment="Center" TextAlignment="Center"/>
+        </Border>
+
+        <!-- Form Row 1: Category | Item Name -->
+        <Grid Grid.Row="2" Margin="20,0,20,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <!-- Spacer -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Category -->
+            <StackPanel Grid.Column="0">
+                <TextBlock Style="{StaticResource FormLabel}" Text="Item Category *"/>
+                <ComboBox ItemsSource="{Binding ItemCategories}" 
+                          SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                          Style="{StaticResource FormControl}"/>
+            </StackPanel>
+
+            <!-- Item Name -->
+            <StackPanel Grid.Column="2">
+                <TextBlock Style="{StaticResource FormLabel}" Text="Item Name *"/>
+                <TextBox Text="{Binding NewItemName, Mode=TwoWay}" 
+                         Style="{StaticResource FormControl}"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Form Row 2: Pack Quantity | Unit Cost -->
+        <Grid Grid.Row="3" Margin="20,0,20,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <!-- Spacer -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Pack Quantity -->
+            <StackPanel Grid.Column="0">
+                <TextBlock Style="{StaticResource FormLabel}" Text="Pack Quantity *"/>
+                <TextBox Text="{Binding NewPackQuantity, Mode=TwoWay}" 
+                         Style="{StaticResource FormControl}"/>
+            </StackPanel>
+
+            <!-- Unit Cost -->
+            <StackPanel Grid.Column="2">
+                <TextBlock Style="{StaticResource FormLabel}" Text="Unit Cost Per Pack *"/>
+                <TextBox Text="{Binding NewUnitCost, Mode=TwoWay}" 
+                         Style="{StaticResource FormControl}"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Form Row 3: Unit of Measurement | Source -->
+        <Grid Grid.Row="4" Margin="20,0,20,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <!-- Spacer -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Unit of Measurement -->
+            <StackPanel Grid.Column="0">
+                <TextBlock Style="{StaticResource FormLabel}" Text="Unit of Measurement *"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Width="140" Text="{Binding NewQuantity, Mode=TwoWay}" 
+                             Height="40" VerticalContentAlignment="Center" FontSize="16" Margin="0,0,12,0"/>
+                    <ComboBox Width="160" ItemsSource="{Binding UnitMeasurementTypes}" 
+                              SelectedItem="{Binding SelectedUnitType, Mode=TwoWay}" 
+                              Height="40" VerticalContentAlignment="Center" FontSize="16"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Source -->
+            <StackPanel Grid.Column="2">
+                <TextBlock Style="{StaticResource FormLabel}" Text="Source *"/>
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox Width="160" ItemsSource="{Binding Sources}" 
+                              SelectedItem="{Binding SelectedSource, Mode=TwoWay}" 
+                              Height="40" VerticalContentAlignment="Center" FontSize="16" Margin="0,0,12,0"/>
+                    <ComboBox Width="200" ItemsSource="{Binding SourceNames}" 
+                              SelectedItem="{Binding SelectedSourceName, Mode=TwoWay}" 
+                              Height="40" VerticalContentAlignment="Center" FontSize="16"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!-- Expiration Date - Centered -->
+        <StackPanel Grid.Row="5" Margin="20,10,20,20" HorizontalAlignment="Left">
+            <TextBlock Style="{StaticResource FormLabel}" Text="Expiration Date" HorizontalAlignment="Left"/>
+            <DatePicker Background="White" SelectedDate="{Binding NewExpirationDate}" 
+                        Height="40" FontSize="20" Width="300" VerticalContentAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Stock-in Summary -->
+        <Border Grid.Row="6" Background="White" BorderBrush="#FFE0E0E0" BorderThickness="1" 
+                CornerRadius="4" Padding="15" Width="300" Margin="20,0,20,20">
+            <StackPanel>
+                <TextBlock Text="Stock-in Summary" FontSize="20" FontWeight="Bold" Margin="0,0,0,10" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding StockInSummary}" 
+                           FontSize="20" 
+                           TextWrapping="Wrap" 
+                           Foreground="#FF444444"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Stock In Button - Centered -->
+        <StackPanel Grid.Row="7" Margin="20,0,20,20" HorizontalAlignment="Center">
+            <Button Content="STOCK IN"
+                    Command="{Binding StockInItemCommand}"
+                    Style="{StaticResource BRole}"
+                    Width="200"/>
+        </StackPanel>
+
+        <!-- Spacer -->
+        <Border Grid.Row="8" />
+
+        <!-- Footer with Back Button -->
+        <Border Grid.Row="9"  BorderBrush="#FFE0E0E0" BorderThickness="0,1,0,0" Padding="20">
+            <Button Content="BACK"
+                    Width="200"
+                    Style="{StaticResource BRole}"
+                    HorizontalAlignment="Left"
+                    Command="{Binding BackCommand}"/>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,10 +1,30 @@
-﻿public class ItemPacks
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+public partial class ItemPacks : ObservableObject
 {
-    public string ItemName { get; set; } = string.Empty;
-    public string Category { get; set; } = string.Empty;
-    public string Unit { get; set; } = string.Empty;
-    public int PackNumber { get; set; }
-    public DateTime? ExpirationDate { get; set; }
-    public string Status { get; set; } = string.Empty;
-    public double PackQuantity { get; set; } = 1; // quantity per pack
+    [ObservableProperty]
+    private string itemName = string.Empty;
+
+    [ObservableProperty]
+    private string category = string.Empty;
+
+    [ObservableProperty]
+    private string unit = string.Empty;
+
+    [ObservableProperty]
+    private int packNumber;
+
+    [ObservableProperty]
+    private DateTime? expirationDate;
+
+    [ObservableProperty]
+    private string status = "Unknown";
+
+    [ObservableProperty]
+    private int daysRemaining;
+
+    [ObservableProperty]
+    private double packQuantity = 1; // quantity per pack
+
+    public string QuantityDisplay => $"{PackQuantity} {Unit}";
 }

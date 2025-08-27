@@ -137,56 +137,72 @@ public partial class InvStockOutViewModel : ObservableObject
             ExpirationDate == null)
             return;
 
-        // Find the item in inventory
         var item = AllInventoryItems.FirstOrDefault(i =>
             i.Name.Equals(ItemName.Trim(), StringComparison.OrdinalIgnoreCase) &&
             i.Category == SelectedCategory);
 
         if (item == null)
         {
-            System.Windows.MessageBox.Show("Item not found in inventory.", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            System.Windows.MessageBox.Show("Item not found in inventory.", "Error",
+                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             return;
         }
 
-        // Check if the expiration date exists in the item
-        int availablePacksWithDate = item.ExpirationDates.Count(d => d.HasValue && d.Value.Date == ExpirationDate.Value.Date);
-        if (availablePacksWithDate == 0)
+        // All packs with this expiration date
+        var sameDatePacks = item.Packs
+            .Where(p => p.ExpirationDate.HasValue &&
+                        p.ExpirationDate.Value.Date == ExpirationDate.Value.Date)
+            .ToList();
+
+        if (sameDatePacks.Count == 0)
         {
-            System.Windows.MessageBox.Show("No packs available with the selected expiration date.", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            System.Windows.MessageBox.Show("No packs available with the selected expiration date.", "Error",
+                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             return;
         }
 
-        // Ensure we do not remove more packs than exist for this expiration date
-        int packsToRemove = Math.Min((int)PackQuantity, availablePacksWithDate);
-        double totalQuantityToRemove = Quantity * packsToRemove;
-
-        if (item.Quantity < totalQuantityToRemove)
+        // We treat Quantity as the per-pack size the user intends to remove.
+        // Enforce exact match to each pack’s size to avoid “25kg for a 20kg pack” issues.
+        if (sameDatePacks.Any(p => Math.Abs(p.PackQuantity - Quantity) > 0.0001))
         {
-            System.Windows.MessageBox.Show("Not enough stock to remove.", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            System.Windows.MessageBox.Show(
+                "Per-pack quantity does not match the stored pack size.\n" +
+                "Please match the pack’s quantity exactly.",
+                "Error",
+                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             return;
         }
 
-        item.Quantity -= totalQuantityToRemove;
-
-        // Remove the exact expiration dates (oldest first)
-        for (int i = 0; i < packsToRemove; i++)
+        int requestedPacks = (int)PackQuantity; // number of packs to remove
+        if (requestedPacks > sameDatePacks.Count)
         {
-            var dateToRemove = item.ExpirationDates.First(d => d.HasValue && d.Value.Date == ExpirationDate.Value.Date);
-            item.ExpirationDates.Remove(dateToRemove);
+            System.Windows.MessageBox.Show("Not enough packs for that expiration date.", "Error",
+                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            return;
         }
 
-        // Remove item entirely if no quantity and no expiration dates
-        if (item.Quantity <= 0 && item.ExpirationDates.Count == 0)
-        {
+        // Remove the exact number of packs
+        for (int i = 0; i < requestedPacks; i++)
+            item.Packs.Remove(sameDatePacks[i]);
+
+        // Update status
+        item.StockStatus = item.Quantity >= item.Threshold ? "Good Stock" : "Low Stock";
+
+        // Optional: remove item entirely if no packs left
+        if (item.PacksCount == 0 && item.Quantity <= 0)
             _parent?.AllInventoryItems.Remove(item);
-        }
 
-        // Update filter so UI reflects changes
-        ApplyFilter();
+        ApplyFilter(); // refresh UI lists
 
-        // Success message
-        System.Windows.MessageBox.Show("Stock-out successful!", "Success", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
-
+        System.Windows.MessageBox.Show(
+                "Stock-out successful!" +
+                $"{ItemName}'s pack/s stocked out successfully!\n" +
+                $"Item's New Total Packs : {item.PacksCount}\n" +
+                $"Item's New Total Quantity : {item.QuantityDisplay}\n" +
+                $"Status: {item.StockStatus}",
+                "Success",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Information);
         // Clear form
         ItemName = string.Empty;
         Quantity = 0;
@@ -195,6 +211,7 @@ public partial class InvStockOutViewModel : ObservableObject
         ExpirationDate = null;
         CustomReason = string.Empty;
     }
+
 
 
 

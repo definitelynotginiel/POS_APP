@@ -15,7 +15,10 @@
             <views:InvMonitorDashboardView />
         </DataTemplate>
 
-        <!-- Map StockInViewModel -> StockInView -->
+        <DataTemplate DataType="{x:Type viewmodels:InvStockInViewModel}">
+            <views:InvStockInView />
+        </DataTemplate>
+        
         <DataTemplate DataType="{x:Type viewmodels:InvStockOutViewModel}">
             <views:InvStockOutView />
         </DataTemplate>
@@ -23,75 +26,13 @@
         <DataTemplate DataType="{x:Type viewmodels:InvExpirationTrackViewModel}">
             <views:InvExpirationTrackView />
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:InvRegistryViewModel}">
+            <views:InvRegistryView />
+        </DataTemplate>
     </UserControl.Resources>
-    
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <ContentControl Grid.Column="0" Content="{Binding CurrentInventoryView}"/>
-
-
-        <!-- RIGHT: Stock in New Items -->
-        <Border Background="AntiqueWhite"  Grid.Column="1" BorderBrush="Black" BorderThickness="2 0 0 0" Padding="10 5 5 0">
-        <ScrollViewer  VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-                <TextBlock Text="Stock in New Items" FontSize="22" FontWeight="Bold" Margin="0,0,0,12"/>
-                <TextBlock Text="*Each item pack with different expiration dates must be stocked in separately"
-                   FontSize="14" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,0,20"/>
-
-                <!-- Item Category -->
-                <TextBlock Text="Item Category" FontWeight="SemiBold" FontSize="16"/>
-                <ComboBox ItemsSource="{Binding ItemCategories}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
-                  FontSize="16" Margin="0,6,0,16" />
-
-                <!-- Item Name -->
-                <TextBlock Text="Item Name" FontWeight="SemiBold" FontSize="16"/>
-                <TextBox Text="{Binding NewItemName, Mode=TwoWay}" FontSize="16" Margin="0,6,0,16"/>
-
-                <!-- Item Pack Quantity -->
-                <TextBlock Text="Item Pack Quantity" FontWeight="SemiBold" FontSize="16"/>
-                <TextBox Text="{Binding NewPackQuantity, Mode=TwoWay}" FontSize="16" Margin="0,6,0,16"/>
-
-                <!-- Unit of Measurement Per Pack -->
-                <TextBlock Text="Unit of Measurement Per Pack" FontWeight="SemiBold" FontSize="16"/>
-                <StackPanel Orientation="Horizontal" Margin="0,6,0,16">
-                    <TextBox Width="140" Text="{Binding NewQuantity, Mode=TwoWay}" FontSize="16" Margin="0,0,12,0"/>
-                    <ComboBox Width="110" ItemsSource="{Binding UnitMeasurementTypes}" SelectedItem="{Binding SelectedUnitType, Mode=TwoWay}" FontSize="16"/>
-                </StackPanel>
-
-                <!-- Default Unit Cost Per Pack -->
-                <TextBlock Text="Default Unit Cost Per Pack" FontWeight="SemiBold" FontSize="16"/>
-                <TextBox Text="{Binding NewUnitCost, Mode=TwoWay}" FontSize="16" Margin="0,6,0,16"/>
-                
-                <!-- Source -->
-                <TextBlock Text="Source" FontWeight="SemiBold" FontSize="16"/>
-                <StackPanel Orientation="Horizontal" Margin="0,6,0,16">
-                    <ComboBox Width="140" ItemsSource="{Binding Sources}" SelectedItem="{Binding SelectedSource, Mode=TwoWay}" FontSize="16" Margin="0,0,12,0"/>
-                    <ComboBox Width="160" ItemsSource="{Binding SourceNames}" SelectedItem="{Binding SelectedSourceName, Mode=TwoWay}" FontSize="16"/>
-                </StackPanel>
-
-                <!-- Expiration Date -->
-                <TextBlock Text="Expiration Date" FontWeight="SemiBold" FontSize="16"/>
-                <DatePicker SelectedDate="{Binding NewExpirationDate, Mode=TwoWay}" FontSize="16" Margin="0,6,0,16"/>
-
-                <!-- Items to be stocked in (notes) -->
-                <TextBlock Text="Stock-in Summary" FontSize="18" FontWeight="Bold" Margin="0,20,0,6"/>
-                <TextBlock Text="{Binding StockInSummary}" 
-           FontSize="16" 
-           TextWrapping="Wrap" 
-           Background="#f0f0f0" 
-           Padding="10 0 10 10"
-           Margin="0,0,0,20"/>
-                
-                <Button Content="Stock in to Inventory"
-                Command="{Binding StockInItemCommand}"
-                Width="240" FontSize="18"
-                HorizontalAlignment="Left"/>
-            </StackPanel>
-        </ScrollViewer>
-        </Border>
+        <ContentControl Grid.Column="1" Content="{Binding CurrentInventoryView}"/>
     </Grid>
 </UserControl>
